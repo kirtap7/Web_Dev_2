@@ -1,0 +1,231 @@
+/* css for background picture */
+body{
+    background-image: url(image/New-will-fullsize.jpeg); /*source https://www.nobelprize.org/ */
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: top;
+}
+
+div#intro{
+    margin-top: 20vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    margin-bottom: 5vw;
+    font-family: "Roboto Slab";
+    font-weight: 100;
+}
+
+h2{
+    color: black;
+    font-style: none;
+    font-size: 40px;
+    font-family: 'Patua One', cursive;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-weight:
+}
+
+/* css for filter options. Placing 2 div in 2 columns*/
+.selection_column {
+    float: left;
+    width: 49%;
+    margin:1px;
+}
+p.filter{
+    font-family: "Poppins";
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* css for sliders source https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round */
+div.slidecontainer {
+    width: 30vw;
+    margin-left: 5vw;
+    margin-bottom: 5vw;   
+}
+
+.slider{
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 1s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #ffbf00;
+    cursor: pointer;
+}
+
+/* css for select menus */
+div.selectmenu{
+    margin-left: 5vw;
+    margin-bottom: 5vw; 
+}
+select {
+    background: #ffbf00;
+    color: black;
+    cursor: pointer;
+    height: 30px;
+    width: 30vw;
+    font-size: 15px;
+    font-family: "Poppins";
+    opacity: 0.6;
+    transition: opacity 1s;
+}
+select:hover {
+    opacity: 1;
+}
+
+/* css for submit button form https://www.w3schools.com/css/tryit.asp?filename=trycss_buttons_animate3 */
+div#submitbtn{
+    margin-top: 400px;
+    text-align: center;
+
+}
+.submit {
+    border-radius: 5px;
+    background-color: #ffbf00;
+    border: none;
+    color: black;
+    text-align: center;
+    font-family: "Roboto";
+    font-size: 20px;
+    height: 40px;
+    width: 120px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.submit:hover {
+    color: white;
+    font-weight: bold;
+    background-color: #ff9900;
+        
+}
+
+/* css for radio buttons*/
+div#genderbtn{
+    margin-bottom: 40px;
+    margin-left: 5vw;
+}
+label {
+    color: black;
+    cursor: pointer;
+    height: 30px;
+    width: 30vw;
+    margin-left: 5vw;
+    font-size: 16px;
+    font-family: "Poppins";
+}
+
+/* div for table*/
+.table_column {
+    width: 100%;
+}
+
+div#table{
+    margin-left: 4vw;
+    width: 30vw;
+    float: left;
+    overflow-x: auto; /*overflow-x:auto makes the tables responsive when browser window is resized*/
+    margin-bottom: 50px;
+}
+div#extra{
+    width: 40vw;
+    margin-left: 50vw;
+    overflow-x: auto; /*overflow-x:auto makes the tables responsive when browser window is resized*/
+    margin-bottom: 50px;
+}
+
+/* css for main tables */
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    font-family: "Roboto"   
+}
+
+th {
+    background-color: #ffbf00;
+    color: black;
+    font-family: "Roboto Slab";
+    font-size: 16px;
+}
+      
+table tr:nth-child(odd) {
+    background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+/* unvisited link */
+a:link {
+    color: black;
+    text-decoration: none;
+}
+
+/* mouse over link */
+a:hover {
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: 17px;
+}
+/* visited link */
+a:visited {
+    text-decoration: none;
+    color:black;
+}
+
+/* css for extra info show/hide button */
+button#hideextra{
+    border-radius: 5px;
+    background-color: #ffbf00;
+    border: none;
+    color: black;
+    font-family: "Roboto";
+    font-size: 12px;
+    height: 30px;
+    width: 150px;
+    cursor: pointer;
+    float: right;
+    margin-right: 20vw;
+}
+
+button#hideextra:hover {
+    color: white;
+    font-weight: bold;
+    background-color: #ff9900;
+        
+}
+
+/* css for footer */
+footer{
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    background-color: white;
+    color: black;
+    font-family: cursive;
+    font-size: 12px;
+    text-align: right;
+    opacity: 0.8;
+}
+a#footer:hover{
+    font-size: 12px;
+}

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+        <title>Nobel Prize Winners</title>
+        <link href="style.css" type="text/css" rel="stylesheet">
+        <!-- importing Google Fonts from https://fonts.google.com !-->
+        <link href="https://fonts.googleapis.com/css?family=Roboto|Poppins|Roboto+Slab|Patua+One" rel="stylesheet">
+    </head>
+<body>
+    <section>
+    <div id=intro> 
+        <h2> Nobel Prize Winners</h2>
+        <p id=intro> Alfred Nobel had a vision of a better world. He believed that people are capable of helping to improve society through knowledge, science and humanism. This is why he created a prize that would reward the discoveries that have conferred the greatest benefit to mankind. Since 1901, the Nobel Prize has been awarded in the fields of physics, chemistry, physiology or medicine, literature and peace, while a memorial prize in economic sciences was added in 1968. 
+        <!-- source https://www.nobelprize.org -->
+        </p>
+    </div>
+    </section>
+<section>
+<div>
+<div class="selection_column">
+    <!-- creating slider for year selection from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round-->
+    <div class="slidecontainer">
+        <p class="filter"> Choose a range of years</p>
+          <input type="range" min="1901" max="2018" value="1" class="slider" id="Rangefrom">
+          <p class="filter">From: <span id="from"></span></p>
+            <script>
+            // this allows to see the value selected below the slider
+            var sliderfrom = document.getElementById("Rangefrom");
+            var outputfrom = document.getElementById("from");
+            outputfrom.innerHTML = sliderfrom.value;
+
+            sliderfrom.oninput = function() {
+              outputfrom.innerHTML = this.value;
+            }
+            </script>
+    </div>
+    <div class="slidecontainer">
+          <input type="range" min="1901" max="2018" value="1" class="slider" id="Rangeto">
+          <p class="filter">To: <span id="to"></span></p>
+            <script>
+            // this allows to see the value selected below the slider
+            var sliderto = document.getElementById("Rangeto");
+            var outputto = document.getElementById("to");
+            outputto.innerHTML = sliderto.value;
+
+            sliderto.oninput = function() {
+              outputto.innerHTML = this.value;
+            }
+            </script>
+    </div> 
+</div>   
+<!-- source https://www.w3schools.com/howto/tryit.asp?filename=tryhow_custom_select and http://1bestcsharp.blogspot.com/2017/03/javascript-get-selected-option-value.html -->
+    <div class="selection_column">
+        <div class="selectmenu">
+        <p class="filter"> Choose a category </p> 
+          <select id="categorylist">
+            <option value="selectcategory">Select category:</option>
+            <option value="physics">physics</option>
+            <option value="chemistry">chemistry</option>
+            <option value="medicine">medicine</option>
+            <option value="peace">peace</option>
+            <option value="literature">literature</option>
+            <option value="economics">economics</option>
+          </select>
+        </div>
+        <div class="selectmenu">
+         <p class="filter">Choose a Country </p>
+        <div  id="country"></div>   
+        </div>
+    </div>
+</div>
+</section>
+    
+<section> 
+    <!-- Submit button -->
+    <div id=submitbtn style="text-align:center">
+        <button class="submit" onclick="displaydata()">Submit</button>
+    </div>
+</section>  
+    <!-- these div contain the tables and the gender radio button -->
+    <div id="genderbtn"></div>
+
+    <div class="table_column">
+
+        <div id="table"></div>
+
+        <div id="extra"></div>
+    </div>
+    
+<script>
+// with this script we use the JSON file to create a selection menu including all the Countries
+    
+// declaring the content of the JSON file as a global variables
+var laureates;
+
+function countries(obj){
+    // This creates an object called laureates containing the data in the JSON file
+    laureates = obj.laureates;
+    // creating an array that will contain all Countries
+    var born = [];
+    // loop that iterates thtough the object
+    // pushing Countries into array after checking if they have been already added
+    for (var i=0; i <laureates.length; i++) {  
+        if (born.indexOf(laureates[i].bornCountry) == -1){
+            born.push(laureates[i].bornCountry)
+        }}
+        // this will sort the array in alphabetical order
+        born.sort();
+    //creating the selection drop down menu with a loop that iterates thourgh the array
+    var selcountry = "<select id=countrylist>"
+    selcountry += "<option value=" + 'selectcountry' + ">"+ 'Select Country:' +"</option>"
+    for (i=0; i <born.length; i++){
+        selcountry += "<option value="+born[i]+">"+ born[i] + "</option>"
+        }
+    selcountry += "</select>"
+    
+    document.getElementById("country").innerHTML = selcountry;
+}
+
+    
+// declaring filters as global variables
+var selectedcountry; 
+var selectedcategory;
+var rangefrom;
+var rangeto;
+
+//loading the JSON file 
+var xmlhttp = new XMLHttpRequest();
+var url = "https://api.myjson.com/bins/pk3w2";
+
+xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        // error handling using try and catch to send alert if JSON file not loaded
+        try{
+        //Parse the JSON data to a JavaScript variable. 
+        var parsedObj = JSON.parse(xmlhttp.responseText);    
+        // This function is defined above and deals with the JSON data read from the file. 
+        countries(parsedObj);}
+        // error handling using try and catch to send alert if JSON file not loaded
+        catch(err){
+            alert(err.message);
+                 }
+    }
+    // error hadling printing error message if JSON file is missing
+    if (xmlhttp.status == 404){
+        document.getElementById('submitbtn').innerHTML = "<p class=filter>" + 'Error!' + "<br>" + 'JSON file not found!' + "</p>"
+    }
+}
+
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+
+// this function will display the data after hitting the Submit button
+function displaydata() {
+    
+    //defining variables that extraxt data from the user filters selection
+    selectedcountry = document.getElementById("countrylist").value;
+    selectedcategory = document.getElementById("categorylist").value;
+    rangefrom = document.getElementById("Rangefrom").value;
+    rangeto = document.getElementById("Rangeto").value;
+    
+    
+    // creating error message if year range selected is not valid (i.e. 'year to' > 'year from')
+    if (rangeto < rangefrom){
+    document.getElementById("table").innerHTML = "<p class=filter>" + 'Error! The year range selected is not valid. Please try again.' + "</p>";
+        }
+    // else, if the year range is correct then display data
+    else{
+    // This creates the table containing the Winners  
+    var tab = "<p class=filter>" + 'Nobel Prize Winners' + "</p>";
+    tab += "<table>"
+    tab += "<tr><th>Name</th><th>Prize Category</th><th>Award Year</th></tr>"; 
+    
+    // This will create gender selection button after submit
+    var genderbtn = "<p class=filter>" + 'Gender selection' + "</p>"
+    genderbtn +="<label>"
+    genderbtn +="<input type=radio name=gender id=male value=male onclick=displayonlymale()> Male" 
+    genderbtn +="<input type=radio name=gender id=female value=female onclick=displayonlyfemale()> Female"
+    genderbtn +="<input type=radio checked name=gender id=both value=both onclick=displaydata()> Both"
+    genderbtn += "</label>"
+    genderbtn +="<button id=hideextra onclick=hideextra()>" +'Hide/Show extra info' + "</button>"
+    
+    // This code iterates through the main array 
+    
+    for (var i=0; i <laureates.length; i++) { 
+        
+        // extracting data from main array 
+        var name = laureates[i].firstname;
+        var surname = laureates[i].surname;   
+        var born = laureates[i].bornCountry;
+        var winnerid = laureates[i].id;
+        
+        // declaring new variables for nested data
+        var j, year = "", category = ""
+        
+        // for loop that iterates through the prizes array since some have more than 1 Nobel
+        for (j in laureates[i].prizes){
+            year = laureates[i].prizes[j].year 
+            category = laureates[i].prizes[j].category
+
+        //dislay all data based only on year range
+        if (laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && selectedcountry == "selectcountry" && selectedcategory == "selectcategory"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo(" + winnerid + ")>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year, category and nationality
+        else if (laureates[i].bornCountry == selectedcountry && laureates[i].prizes[j].category == selectedcategory && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year and category (no nationality selected)
+        else if (selectedcountry == "selectcountry" && laureates[i].prizes[j].category == selectedcategory && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year and nationality (no category selected)
+        else if (selectedcategory == "selectcategory" && laureates[i].bornCountry == selectedcountry && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        } 
+ 
+    }
+    }
+    
+    // Close the table element.
+    tab += "</table>"; 
+    
+    // Add the new html code to the div element with id = 'table'.
+    document.getElementById("table").innerHTML = tab;
+    // Add the button to div element with id = 'genderbtn'.
+    document.getElementById("genderbtn").innerHTML = genderbtn;  
+    
+}
+}
+
+// function that displays only male winners
+function displayonlymale(){
+    
+    var tab = "<p class=filter>" + 'Nobel Prize Winners' + "</p>";
+    tab += "<table>"
+    tab +="<tr><th>Name</th><th>Prize Category</th><th>Award Year</th></tr>"; 
+    
+    // This will create gender selection button 
+    var genderbtn = "<p class=filter>" + 'Gender selection' + "</p>"
+    genderbtn +="<label>"
+    genderbtn +="<input type=radio checked name=gender id=male value=male onclick=displayonlymale()> Male" 
+    genderbtn +="<input type=radio name=gender id=female value=female onclick=displayonlyfemale()> Female"
+    genderbtn +="<input type=radio name=gender id=both value=both onclick=displaydata()> Both"
+    genderbtn += "</label>"
+    genderbtn +="<button id=hideextra onclick=hideextra()>" +'Hide/Show extra info' + "</button>"
+    
+    for (var i=0; i <laureates.length; i++) { 
+        
+        // extracting data from main array 
+        var name = laureates[i].firstname;
+        var surname = laureates[i].surname;   
+        var born = laureates[i].bornCountry;
+        var winnerid = laureates[i].id;
+        
+        // declaring new variables for nested data
+        var j, year = "", category = ""
+        
+        // for loop that iterates through the prizes array since some have more than 1 Nobel
+        for (j in laureates[i].prizes){
+            year = laureates[i].prizes[j].year 
+            category = laureates[i].prizes[j].category
+            
+        //dislay all data based on year range
+        if (laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && selectedcountry == "selectcountry" && selectedcategory == "selectcategory" && laureates[i].gender == "male"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year, category and nationality
+        else if (laureates[i].bornCountry == selectedcountry && laureates[i].prizes[j].category == selectedcategory && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && laureates[i].gender == "male"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year and category (no nationality selected)
+        else if (selectedcountry == "selectcountry" && laureates[i].prizes[j].category == selectedcategory && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && laureates[i].gender == "male"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year and nationality (no category selected)
+        else if (selectedcategory == "selectcategory" && laureates[i].bornCountry == selectedcountry && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && laureates[i].gender == "male"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+            
+    }
+    }
+     // Close the table element.
+    tab += "</table>"; 
+    
+        // Add the new html code to the div element with id = 'table'.
+        document.getElementById("table").innerHTML = tab;
+        document.getElementById("genderbtn").innerHTML = genderbtn;
+}
+
+// function that displays only female winners
+function displayonlyfemale(){
+
+    // This creates the table containing the Winners  
+    var tab = "<p class=filter>" + 'Nobel Prize Winners' + "</p>";
+    tab += "<table>"
+    tab +="<tr><th>Name</th><th>Prize Category</th><th>Award Year</th></tr>"; 
+    
+    // This will create gender selection button 
+    var genderbtn = "<p class=filter>" + 'Gender selection' + "</p>"
+    genderbtn +="<label>"
+    genderbtn +="<input type=radio name=gender id=male value=male onclick=displayonlymale()> Male" 
+    genderbtn +="<input type=radio checked name=gender id=female value=female onclick=displayonlyfemale()> Female"
+    genderbtn +="<input type=radio name=gender id=both value=both onclick=displaydata()> Both"
+    genderbtn += "</label>"
+    genderbtn +="<button id=hideextra onclick=hideextra()>" +'Hide/Show extra info' + "</button>"
+    
+    // This code iterates through the main array 
+    for (var i=0; i <laureates.length; i++) { 
+        
+        // extracting data from main array 
+        var name = laureates[i].firstname;
+        var surname = laureates[i].surname;   
+        var born = laureates[i].bornCountry;
+        var winnerid = laureates[i].id;
+        
+        // declaring new variables for nested data
+        var j, year = "", category = ""
+        
+        // for loop that iterates through the prizes array since some have more than 1 Nobel
+        for (j in laureates[i].prizes){
+            year = laureates[i].prizes[j].year 
+            category = laureates[i].prizes[j].category
+            
+        //dislay all data based on year range
+        if (laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && selectedcountry == "selectcountry" && selectedcategory == "selectcategory" && laureates[i].gender == "female"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year, category and nationality
+        else if (laureates[i].bornCountry == selectedcountry && laureates[i].prizes[j].category == selectedcategory && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && laureates[i].gender == "female"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year and category (no nationality selected)
+        else if (selectedcountry == "selectcountry" && laureates[i].prizes[j].category == selectedcategory && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && laureates[i].gender == "female"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+        // display based on selection of year and nationality (no vategory selected)
+        else if (selectedcategory == "selectcategory" && laureates[i].bornCountry == selectedcountry && laureates[i].prizes[j].year <= rangeto && laureates[i].prizes[j].year >= rangefrom && laureates[i].gender == "female"){
+        tab += "<tr><td>" + "<a href=#extra onclick=displayextrainfo('" + winnerid +"')>"+ name + ' ' + surname +'</a>' + "</td><td>" + category + "</td><td>" + year + "</td></tr>";
+        }
+            
+    }
+    }
+    
+    // Close the table element.
+    tab += "</table>"; 
+    
+    // Add the new html code to the div element with id = 'table'.
+    document.getElementById("table").innerHTML = tab;
+    document.getElementById("genderbtn").innerHTML = genderbtn;
+    
+}
+    
+// function that displays extra info for the selected winner by clicking on the name
+function displayextrainfo(winnerid){
+
+    // creating extra info table
+    var extratab = "<table>";
+    extratab +="<tr><th>Year of Birth</th><th>Year of Death</th><th>City of birth</th><th>Motivation</th><th>Affiliations</th></tr>"
+
+    // This code iterates through the main array 
+    for (var i=0; i <laureates.length; i++) { 
+        
+        // extracting data from main array 
+        var birthdate = laureates[i].born;
+        var deathdate = laureates[i].died;
+        var birthcity = laureates[i].bornCity
+        var name = laureates[i].firstname;
+        var surname = laureates[i].surname;
+        
+        // declaring new variables for nested data
+        var j, year = "", motivation = ""
+        
+        // for loop that iterates through the prizes array since some have more than 1 Nobel
+        for (j in laureates[i].prizes){
+            motivation = laureates[i].prizes[j].motivation
+            year = laureates[i].prizes[j].year
+            
+            // for loop to extraxt affiliations information
+            var z, affname = ""
+            
+            for (z in laureates[i].prizes[j].affiliations){
+                affname = laureates[i].prizes[j].affiliations[z].name
+            
+        //dislay data based on winnerid
+        if (winnerid == laureates[i].id){
+        extratab +="<p class=filter>" + "More information about: " + name + ' ' + surname + "</p>"
+        extratab += "<tr><td>" + birthdate.slice(0,4)+ "</td><td>" + deathdate.slice(0,4) + "</td><td>" + birthcity + "</td><td>" + motivation + "</td><td>" + affname + "</td></tr>";
+        }       
+    }
+    }
+    }
+    // Close the table element.
+    extratab += "</table>"
+    document.getElementById("extra").innerHTML = extratab;
+    
+    // if the year of death is missing is represented as 0000
+    // with the replace function we replace '0000' with 'N/A'
+    var replace = extratab.replace('0000', "N/A");
+    document.getElementById("extra").innerHTML = replace;
+}
+</script>
+<script>
+    // this function allows to hide/show the extra info table on the right-hand site of the page
+    function hideextra() {
+        var x = document.getElementById("extra");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>
+    <footer>
+        <p style="margin-right: 10px" ><a id="footer" href="mailto:patrick.malatesta@ucdconnect.ie"> Created by: Patrick Tomasini Malatesta - Student ID 18205940 </a> 
+        </p>
+    </footer>
+</body>
+</html>
